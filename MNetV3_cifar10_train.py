@@ -2,7 +2,7 @@
 Create & train a custom cnn model for CIFAR-10 classification
 Tensorflow 2.3
 
-Author: chao.zhang
+Author: chao.zhang, YiYu_Chen
 '''
 
 import os
@@ -41,10 +41,10 @@ def se_block(inputs, filters):
     x = GlobalAveragePooling2D()(inputs)
     x = Dense(filters // 4)(x)
     x = ReLU(max_value=6)(x)
+    x = Dropout(0.5)(x)
     x = Dense(filters)(x)
     x = H_Swish(x)
     x = Reshape((1, 1, filters))(x)
-    #un-comment the line below will go boom
     x = Multiply()([x, inputs])
     return x
 
@@ -98,7 +98,7 @@ def customcnn():    #try dropout
     x = bottleneck(x, 43, (3, 3), 1.0, stride=1, expansion=1, se=False)   #True
 
     # output layer
-    x = GlobalAveragePooling2D()(x)    
+    x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
     outputs = Dense(10, activation='softmax')(x)
 
@@ -115,7 +115,7 @@ model = customcnn()
 
 optimizer = keras.optimizers.SGD(
                                 momentum=0.5,
-                                learning_rate=1e-2
+                                learning_rate=1e-1
                                 )
 model.compile(optimizer=optimizer,  #'rmsprop' 
             loss="categorical_crossentropy",
@@ -141,3 +141,5 @@ print("\nEvaluate model on test dataset..")
 loss, acc = model.evaluate(test_dataset)  # returns loss and metrics
 print("loss: %.3f" % loss)
 print("acc: %.3f" % acc)
+
+
