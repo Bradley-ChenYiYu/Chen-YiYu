@@ -1,0 +1,9 @@
+{
+    "lib": "libvart-dpu-runner.so",
+    "filename": "customcnn.xmodel",
+    "kernel": [
+        "subgraph_quant_conv2d_10",
+        "subgraph_fake_downsample_1"
+    ],
+    "target": "DPUCZDX8G_ISA1_B4096"
+}
