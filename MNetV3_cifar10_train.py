@@ -60,6 +60,9 @@ def bottleneck(inputs, filters, kernel_size, alpha, stride=1, expansion=1, se=Fa
     x = Conv2D(expanded_filters, kernel_size=1, padding='same')(inputs)
     x = BatchNormalization()(x)
     x = H_Swish(x)
+
+    if stride == 2:
+      x = ZeroPadding2D(padding=(1,1))(x)
     
     x = DepthwiseConv2D(kernel_size=kernel_size, strides=stride, padding='same')(x)
     x = BatchNormalization()(x)
@@ -74,7 +77,7 @@ def bottleneck(inputs, filters, kernel_size, alpha, stride=1, expansion=1, se=Fa
     if stride > 1:
         inputs = Conv2D(filters, kernel_size=1, strides=stride, padding='same')(inputs)
         inputs = BatchNormalization()(inputs)
-    if inputs.shape[-1] == filters: #if inputs.shape == x.shape:
+    if stride == 1 and inputs.shape[-1] == filters: #if inputs.shape == x.shape:
         x = Add()([inputs, x])
 
     x = H_Swish(x)
